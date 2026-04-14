@@ -17,13 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const polaroid = document.createElement('div');
       polaroid.classList.add('polaroid');
       
-      // Randomize rotation and slight position offset for the scattered look
       const rotate = random(-15, 15);
       const translateY = random(-10, 20);
-      polaroid.style.transform = `rotate(${rotate}deg) translateY(${translateY}px)`;
+      polaroid.style.setProperty('--rot', `${rotate}deg`);
+      polaroid.style.setProperty('--y', `${translateY}px`);
       
-      // Add a slight animation delay so they don't all appear instantly at once if we add entry animations
-      polaroid.style.animationDelay = `${index * 0.1}s`;
+      // Randomize animation delay and duration so they bob organically
+      polaroid.style.animationDelay = `${random(0, 4)}s`;
+      polaroid.style.animationDuration = `${random(3.5, 6)}s`;
 
       // Create image element
       const img = document.createElement('img');
@@ -92,10 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
     constructor() {
       this.x = Math.random() * width;
       this.y = Math.random() * height;
-      this.size = Math.random() * 3 + 1; // 1 to 4px
+      this.size = Math.random() * 5 + 3; // Heart size
       this.speedY = Math.random() * 0.5 + 0.1; // Float slowly upwards
       this.speedX = (Math.random() - 0.5) * 0.5; // Drift sideways
-      this.opacity = Math.random() * 0.5 + 0.2;
+      this.opacity = Math.random() * 0.4 + 0.1;
       // Soft pink/white color for particles
       const colors = ['rgba(255, 255, 255, ', 'rgba(255, 204, 213, ', 'rgba(255, 77, 109, '];
       this.colorBase = colors[Math.floor(Math.random() * colors.length)];
@@ -117,8 +118,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     draw() {
       ctx.beginPath();
-      // Draw a soft glowing dot
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      // Draw a small floating heart
+      const x = this.x;
+      const y = this.y;
+      const size = this.size;
+      
+      ctx.moveTo(x, y - size / 4);
+      ctx.bezierCurveTo(x, y - size, x - size, y - size, x - size, y - size / 4);
+      ctx.bezierCurveTo(x - size, y + size / 2, x, y + size * 0.75, x, y + size);
+      ctx.bezierCurveTo(x, y + size * 0.75, x + size, y + size / 2, x + size, y - size / 4);
+      ctx.bezierCurveTo(x + size, y - size, x, y - size, x, y - size / 4);
+      
       ctx.fillStyle = this.colorBase + this.opacity + ')';
       ctx.fill();
     }

@@ -1,7 +1,7 @@
 :root {
-  --bg-color-1: #0f0c29;
-  --bg-color-2: #302b63;
-  --bg-color-3: #24243e;
+  --bg-color-1: #1a0b2e; /* dark romantic violet */
+  --bg-color-2: #4a154b; /* deep magenta */
+  --bg-color-3: #2e0618; /* romantic dark red */
   --text-primary: #ffffff;
   --text-secondary: #ffccd5;
   --card-bg: rgba(255, 255, 255, 0.95);
@@ -24,6 +24,25 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
+}
+
+/* Pulsing romantic screen glow */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  box-shadow: inset 0 0 100px rgba(255, 77, 109, 0.15);
+  z-index: 9999;
+  animation: pulseGlow 5s infinite alternate ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: inset 0 0 50px rgba(255, 77, 109, 0.1); }
+  100% { box-shadow: inset 0 0 150px rgba(255, 77, 109, 0.3); }
 }
 
 @keyframes gradientBG {
@@ -69,9 +88,12 @@ body {
 }
 
 .subtitle {
-  font-size: 1.2rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-style: italic;
   color: var(--text-secondary);
   font-weight: 300;
+  margin-top: 10px;
 }
 
 .gallery-container {
@@ -86,15 +108,25 @@ body {
 
 /* Polaroid Card */
 .polaroid {
+  --rot: 0deg;
+  --y: 0px;
   background: var(--card-bg);
   padding: 15px 15px 40px 15px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   cursor: pointer;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important, box-shadow 0.4s ease;
   width: 250px;
   max-width: 100%;
   position: relative;
+  /* Floating animation */
+  transform: translateY(var(--y)) rotate(var(--rot));
+  animation: floatBob 4s ease-in-out infinite alternate;
+}
+
+@keyframes floatBob {
+  0% { transform: translateY(calc(var(--y) - 6px)) rotate(var(--rot)); }
+  100% { transform: translateY(calc(var(--y) + 6px)) rotate(var(--rot)); }
 }
 
 .polaroid::after {
@@ -120,8 +152,9 @@ body {
 }
 
 .polaroid:hover {
+  animation-play-state: paused !important; /* Stop bobbing while hovering to prevent glitching */
   transform: translateY(-15px) scale(1.05) rotate(0deg) !important; /* Forces right side up on hover */
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 35px rgba(255, 77, 109, 0.5), 0 10px 20px rgba(0, 0, 0, 0.2);
   z-index: 10;
 }
 
